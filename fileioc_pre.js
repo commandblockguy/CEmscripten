@@ -1,4 +1,4 @@
-Module.preRun = [
+Module.preRun.push(
 	function() {
 		Module.fileioc = {loaded: false};
 		FS.mkdir('/calc');
@@ -6,4 +6,4 @@ Module.preRun = [
 		FS.syncfs(true, () => {Module.fileioc.loaded = true;});
 		FS.chdir('/calc');
 	}
-];
+);

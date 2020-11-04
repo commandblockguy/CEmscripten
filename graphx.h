@@ -57,5 +57,3 @@ extern uint8_t gfx_vram[320*240*2];
 uint8_t *gfx_GetVBuffer(void);
 uint8_t *gfx_GetFBuffer(void);
 uint8_t *gfx_GetBBuffer(void);
-uint8_t gfx_GetColor(void);
-uint8_t gfx_GetTransparentColor(void);
