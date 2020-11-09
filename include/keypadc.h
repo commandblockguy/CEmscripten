@@ -6,7 +6,7 @@ typedef uint16_t kb_lkey_t; /**< Long key type   */
 #define kb_ScanGroup(row) kb_Data[row]
 uint8_t kb_AnyKey(void);
 
-#define kb_Scan()
+#define kb_Scan() delay(1)
 
 #define kb_IsDown(lkey) \
 (kb_Data[(lkey) >> 8] & (lkey))

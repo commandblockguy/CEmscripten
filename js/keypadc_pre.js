@@ -194,8 +194,6 @@ Module.kb_Data = null;
 window.addEventListener('keydown', async (e) => {
 	if(!Module.kb_Data) Module.kb_Data = await ccall('get_kb_Data', 'number');
 
-	e.preventDefault();
-
     var key_name = default_keymap[e.key];
     if(!key_name) {
     	if(key_name !== null) {
@@ -208,6 +206,7 @@ window.addEventListener('keydown', async (e) => {
 		console.log('No keypad key:', key_name);
 		return;
 	}
+	e.preventDefault();
 	var ptr = Module.kb_Data + keynum[0];
 	setValue(ptr, getValue(ptr, 'i8') | (1 << keynum[1]), 'i8');
 });

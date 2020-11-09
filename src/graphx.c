@@ -19,6 +19,8 @@ static uint8_t text_bg_color = 0;
 static uint8_t text_transparent_color = 0;
 static int text_x = 0;
 static int text_y = 0;
+static uint8_t text_width_scale = 0;
+static uint8_t text_height_scale = 0;
 
 uint8_t spacings[256] = {
     8,8,8,8,8,8,8,8,8,8,8,8,8,2,8,8,
@@ -221,6 +223,16 @@ void gfx_FillRectangle(int x,
 	}
 }
 
+void gfx_Rectangle(int x,
+                   int y,
+                   int width,
+                   int height) {
+    gfx_HorizLine(x, y, width);
+    gfx_HorizLine(x, y + height - 1, width);
+    gfx_VertLine(x, y + 1, height - 2);
+    gfx_VertLine(x + width - 1, y + 1, height - 2);
+}
+
 void gfx_Sprite(gfx_sprite_t *sprite, int x, int y) {
 	uint8_t *current_in = sprite->data;
 	uint8_t *current_out = gfx_GetVBuffer() + x + LCD_WIDTH * y;
@@ -245,6 +257,19 @@ void gfx_TransparentSprite(gfx_sprite_t *sprite, int x, int y) {
 		}
 		current_out += LCD_WIDTH - sprite->width;
 	}
+}
+
+void gfx_ScaledSprite_NoClip(gfx_sprite_t *sprite, uint24_t x, uint8_t y, uint8_t width_scale, uint8_t height_scale) {
+    for(int sprite_y = 0; sprite_y < sprite->height; sprite_y++) {
+        for(int sprite_x = 0; sprite_x < sprite->width; sprite_x++) {
+            for(int dx = 0; dx < width_scale; dx++) {
+                for(int dy = 0; dy < height_scale; dy++) {
+                    gfx_GetVBuffer()[sprite_x * width_scale + dx + (sprite_y * height_scale + dy) * LCD_WIDTH] =
+                        sprite->data[sprite_x + sprite_y * sprite->width];
+                }
+            }
+        }
+    }
 }
 
 gfx_sprite_t *gfx_GetSprite(gfx_sprite_t *sprite, int x, int y) {
@@ -289,6 +314,12 @@ uint8_t gfx_SetTextFGColor(uint8_t color) {
 	return old;
 }
 
+void gfx_SetTextScale(uint8_t width_scale, uint8_t height_scale) {
+    text_width_scale = width_scale;
+    text_height_scale = height_scale;
+}
+
+// todo: text scale
 void gfx_PrintChar(char c) {
     int width = spacings[c];
     for(int y = 0; y < 8; y++) {
@@ -316,8 +347,44 @@ void gfx_SetTextXY(int x, int y) {
 	text_y = y;
 }
 
+int gfx_GetTextX(void) {
+    return text_x;
+}
+
+int gfx_GetTextY(void) {
+    return text_y;
+}
+
 void gfx_PrintUInt(unsigned int n, uint8_t length) {
 	char buf[32];
 	snprintf(buf, sizeof buf, "%.*u", length, n);
 	gfx_PrintString(buf);
+}
+
+unsigned int gfx_GetCharWidth(const char c) {
+    return spacings[c];
+}
+
+unsigned int gfx_GetStringWidth(const char *string) {
+    unsigned int total = 0;
+    for(int i = 0; i < strlen(string); i++) {
+        total += spacings[string[i]];
+    }
+    return total;
+}
+
+void gfx_HorizLine(int x,
+                   int y,
+                   int length) {
+    memset(&gfx_GetVBuffer()[x + y * LCD_WIDTH], color, length);
+}
+
+void gfx_VertLine(int x,
+                  int y,
+                  int length) {
+    uint8_t *pos = &gfx_GetVBuffer()[x + y * LCD_WIDTH];
+    for(int i = 0; i < length; i++) {
+        *pos = color;
+        pos += LCD_WIDTH;
+    }
 }
