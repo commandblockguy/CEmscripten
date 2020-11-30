@@ -2,8 +2,14 @@
 #define H_TICE
 
 #include <emscripten.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdbool.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 #define LCD_WIDTH 320
 #define LCD_HEIGHT 240
@@ -66,5 +72,9 @@ uint32_t set_timer_Counter(uint8_t n, uint32_t x);
 #define timer_1_Counter get_timer_Counter(1)
 #define timer_2_Counter get_timer_Counter(2)
 #define timer_3_Counter get_timer_Counter(3)
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

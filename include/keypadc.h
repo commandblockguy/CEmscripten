@@ -1,6 +1,10 @@
 #ifndef H_KEYPADC
 #define H_KEYPADC
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdint.h>
 
 typedef uint8_t kb_key_t;   /**< Normal key type */
@@ -152,5 +156,9 @@ extern uint8_t kb_Data[8];
 #define kb_group_5      5
 #define kb_group_6      6
 #define kb_group_7      7
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

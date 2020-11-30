@@ -1,6 +1,13 @@
 #ifndef H_GRAPHX
 #define H_GRAPHX
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <stdint.h>
+#include <string.h>
+
 void gfx_Begin();
 void gfx_End(void);
 void gfx_FillScreen(uint8_t index);
@@ -81,5 +88,9 @@ extern uint8_t gfx_vram[320*240*2];
 uint8_t *gfx_GetVBuffer(void);
 uint8_t *gfx_GetFBuffer(void);
 uint8_t *gfx_GetBBuffer(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
