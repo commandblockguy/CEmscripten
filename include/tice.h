@@ -1,3 +1,6 @@
+#ifndef H_TICE
+#define H_TICE
+
 #include <emscripten.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -63,3 +66,5 @@ uint32_t set_timer_Counter(uint8_t n, uint32_t x);
 #define timer_1_Counter get_timer_Counter(1)
 #define timer_2_Counter get_timer_Counter(2)
 #define timer_3_Counter get_timer_Counter(3)
+
+#endif

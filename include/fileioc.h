@@ -1,3 +1,6 @@
+#ifndef H_FILEIOC
+#define H_FILEIOC
+
 #include <stdio.h>
 
 typedef FILE* ti_var_t;
@@ -19,3 +22,5 @@ int ti_Delete(const char *name);
 void *ti_GetDataPtr(const ti_var_t slot);
 
 #define ti_SetArchiveStatus(ignore, ignore_f)
+
+#endif
