@@ -101,9 +101,9 @@ int ti_Delete(const char *name) {
 void *ti_GetDataPtr(const ti_var_t slot) {
 	for(int i = 0; i < 16; i++) {
 		if(files[i].file == slot) {
-			if(files[i].data) return files[i].data;
 			FILE *f = files[i].file;
 			int pos = ftell(f);
+			if(files[i].data) return files[i].data + pos;
 			fseek(f, 0, SEEK_END);
 			int size = ftell(f);
 			void *data = malloc(size);
@@ -115,5 +115,6 @@ void *ti_GetDataPtr(const ti_var_t slot) {
 			return &data[pos];
 		}
 	}
+	printf("ti_GetDataPtr couldn't find slot\n");
 	return NULL;
 }
