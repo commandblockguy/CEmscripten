@@ -1,5 +1,4 @@
 mergeInto(LibraryManager.library, {
-    graphx: null,
     gfx_Begin: function() {
         class Graphx {
             constructor() {
@@ -45,11 +44,12 @@ mergeInto(LibraryManager.library, {
                     imagedata.data.set(palette[vram[i]], i * 4);
                 }
                 ctx.putImageData(imagedata, 0, 0);
+                this.refreshed = true;
             }
         }
-        graphx = new Graphx();
+        Module.graphx = new Graphx();
     },
     gfx_End: function() {
-        clearInterval(graphx.refresh_interval);
+        clearInterval(Module.graphx.refresh_interval);
     }
 });

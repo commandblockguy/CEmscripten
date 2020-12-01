@@ -81,6 +81,79 @@ void gfx_VertLine(int x,
                   int y,
                   int length);
 
+typedef struct {
+    uint8_t *map;            /**< Pointer to tilemap array. */
+    gfx_sprite_t **tiles;    /**< Pointer to tileset sprites for the tilemap. */
+    uint8_t tile_height;     /**< Individual tile height. */
+    uint8_t tile_width;      /**< Individual tile width. */
+    uint8_t draw_height;     /**< Number of tilemap rows to draw. */
+    uint8_t draw_width;      /**< Number of tilemap columns to draw. */
+    uint8_t type_width;      /**< Tile type height @see gfx_tilemap_type_t. */
+    uint8_t type_height;     /**< Tile type width @see gfx_tilemap_type_t. */
+    uint8_t height;          /**< Total number of rows in the tilemap. */
+    uint8_t width;           /**< Total number of columns in the tilemap. */
+    uint8_t y_loc;           /**< Y pixel location on the screen for the tilemap. */
+    uint24_t x_loc;          /**< X pixel location on the screen for the tilemap. */
+} gfx_tilemap_t;
+
+typedef enum {
+    gfx_tile_no_pow2 = 0,     /**< Use when the tile width/height is not a power of 2. */
+    gfx_tile_2_pixel,         /**< Use when the tile width/height is 2 pixels. */
+    gfx_tile_4_pixel,         /**< Use when the tile width/height is 4 pixels. */
+    gfx_tile_8_pixel,         /**< Use when the tile width/height is 8 pixels. */
+    gfx_tile_16_pixel,        /**< Use when the tile width/height is 16 pixels. */
+    gfx_tile_32_pixel,        /**< Use when the tile width/height is 32 pixels. */
+    gfx_tile_64_pixel,        /**< Use when the tile width/height is 64 pixels. */
+    gfx_tile_128_pixel        /**< Use when the tile width/height is 128 pixels. */
+} gfx_tilemap_type_t;
+
+void gfx_Tilemap(const gfx_tilemap_t *tilemap,
+                 uint24_t x_offset,
+                 uint24_t y_offset);
+void gfx_FillCircle(int x,
+                    int y,
+                    uint24_t radius);
+void gfx_Wait(void);
+void gfx_SetClipRegion(int xmin, int ymin, int xmax, int ymax);
+void gfx_SwapDraw(void);
+void gfx_Line(int x0,
+              int y0,
+              int x1,
+              int y1);
+void gfx_FillTriangle(int x0,
+                      int y0,
+                      int x1,
+                      int y1,
+                      int x2,
+                      int y2);
+void gfx_FillCircle_NoClip(uint24_t x,
+                           uint8_t y,
+                           uint24_t radius);
+void gfx_FillTriangle_NoClip(int x0,
+                             int y0,
+                             int x1,
+                             int y1,
+                             int x2,
+                             int y2);
+void gfx_Rectangle_NoClip(uint24_t x,
+                          uint8_t y,
+                          uint24_t width,
+                          uint8_t height);
+gfx_sprite_t *gfx_AllocSprite(uint8_t width,
+                              uint8_t height,
+                              void *(*malloc_routine)(size_t));
+#define gfx_MallocSprite(width, height) \
+gfx_AllocSprite(width, height, malloc)
+void gfx_Sprite_NoClip(const gfx_sprite_t *sprite, uint24_t x, uint8_t y);
+typedef struct {
+    int xmin; /**< Minimum x coordinate. */
+    int ymin; /**< Minimum y coordinate. */
+    int xmax; /**< Maximum x coordinate. */
+    int ymax; /**< Maximum y coordinate. */
+} gfx_region_t;
+bool gfx_GetClipRegion(gfx_region_t *region);
+void gfx_TransparentSprite_NoClip(const gfx_sprite_t *sprite, int x, int y);
+
 extern uint16_t gfx_palette[256];
 extern uint8_t gfx_vram[320*240*2];
 #define gfx_vbuffer gfx_GetVBuffer()

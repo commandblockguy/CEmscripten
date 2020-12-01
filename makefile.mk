@@ -4,8 +4,8 @@ WASM_EXTRA_CFLAGS ?=
 
 web: $(NAME).html $(NAME).wasm $(NAME).js
 
-$(NAME).html $(NAME).wasm $(NAME).js: $(INTERNAL_SOURCES) $(CSOURCES) $(USERHEADERS)
-	emcc $(INTERNAL_SOURCES) $(CSOURCES) -O3 -o $(NAME).html \
+$(NAME).html $(NAME).wasm $(NAME).js: $(INTERNAL_SOURCES) $(CSOURCES) $(CPPSOURCES) $(USERHEADERS)
+	emcc $(INTERNAL_SOURCES) $(CSOURCES) $(CFLAGS) $(CPPSOURCES) -o $(NAME).html \
 	-isystem $(CEMSCRIPTEN)/include -Wno-main-return-type \
 	-Duint24_t="unsigned int" -Dint24_t=int \
 	--js-library $(CEMSCRIPTEN)/js/graphx.js --js-library $(CEMSCRIPTEN)/js/keypadc.js --js-library $(CEMSCRIPTEN)/js/tice.js \
