@@ -19,6 +19,17 @@ mergeInto(LibraryManager.library, {
 			timer.count_up = (x & (1 << (8 + i))) > 0;
 		}
 	},
+	get_timer_Control: function() {
+		let result = 0;
+		for(let i = 1; i <= 3; i++) {
+			let timer = Module.timers[i - 1];
+			if(timer.active) result |= 1 << 3*(i - 1);
+			if(timer.frequency = 32768) result |= 1 << (3*(i - 1) + 1);
+			if(timer.int) result |= 1 << (3*(i - 1) + 2);
+			if(timer.count_up) result |= 1 << (8 + i);
+		}
+		return result;
+	},
 	update_timer_Counter: function(x) {
 		let timer = Module.timers[x - 1];
 		let new_epoch = new Date;
@@ -26,8 +37,16 @@ mergeInto(LibraryManager.library, {
 		timer.epoch = new_epoch;
 		if(!timer.active) return;
 		let diff = timer.frequency * diff_ms / 1000;
-		// todo: counting down
-		timer.offset += diff;
+		if(timer.count_up) {
+			timer.offset += diff;
+		} else {
+			timer.offset -= diff;
+			if(timer.offset < 0) {
+				// don't you love negative modulo
+				timer.offset = ((timer.offset % timer.reload) + timer.reload) % timer.reload;
+				timer.interrupts |= (1<<2);
+			}
+		}		
 	},
 	get_timer_Counter__deps: ['update_timer_Counter'],
 	get_timer_Counter: function(x) {
@@ -39,5 +58,19 @@ mergeInto(LibraryManager.library, {
 		let timer = Module.timers[x - 1];
 		timer.offset = n;
 		timer.epoch = new Date;
-	}
+	},
+	set_timer_ReloadValue: function(x, n) {
+		let timer = Module.timers[x - 1];
+		timer.reload = n;
+	},
+	timer_AckInterrupt: function(x, n) {
+		let timer = Module.timers[x - 1];
+		timer.interrupts &= ~n;
+	},
+	timer_CheckInterrupt__deps: ['update_timer_Counter'],
+	timer_CheckInterrupt: function(x, n) {
+		_update_timer_Counter(x);
+		let timer = Module.timers[x - 1];
+		return timer.interrupts & n;
+	},
 });

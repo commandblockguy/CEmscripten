@@ -25,6 +25,7 @@ uint32_t rtc_Time(void);
 #define os_GetCSC() kb_AnyKey()
 
 bool set_timer_Control(int x);
+uint32_t get_timer_Control(void);
 #define timer_Control for(int dummy_timer_Control = -1; dummy_timer_Control == -1 ? 1 : set_timer_Control(dummy_timer_Control);) dummy_timer_Control
 
 #define TIMER1_ENABLE            (1<<0)  /* Enables Timer 1                                        */
@@ -68,10 +69,27 @@ bool set_timer_Control(int x);
 #define TIMER3_RELOADED          (1<<8)  /* Timer 3 was reloaded (Needs TIMER3_0INT enabled)       */
 
 uint32_t get_timer_Counter(uint8_t n);
-uint32_t set_timer_Counter(uint8_t n, uint32_t x);
+void set_timer_Counter(uint8_t n, uint32_t x);
+void set_timer_ReloadValue(uint8_t n, uint32_t x);
 #define timer_1_Counter get_timer_Counter(1)
 #define timer_2_Counter get_timer_Counter(2)
 #define timer_3_Counter get_timer_Counter(3)
+
+#define TIMER_32K               1  /**< Use the 32K clock for timer                         */
+#define TIMER_CPU               0  /**< Use the CPU clock rate for timer                    */
+#define TIMER_0INT              1  /**< Enable an interrupt when 0 is reached for the timer */
+#define TIMER_NOINT             0  /**< Disable interrupts for the timer                    */
+#define TIMER_UP                1  /**< Timer counts up                                     */
+#define TIMER_DOWN              0  /**< Timer counts down                                   */
+
+#define TIMER_MATCH1            (1<<0)  /**< Timer hit the first match value                */
+#define TIMER_MATCH2            (1<<1)  /**< Timer hit the second match value               */
+#define TIMER_RELOADED          (1<<2)  /**< Timer was reloaded (Needs TIMER_0INT enabled)  */
+
+#define timer_Enable(n, rate, int, dir) (set_timer_Control(get_timer_Control() & ~(0x7 << 3 * ((n) - 1) | 1 << (n) + 8) | (1 | (rate) << 1 | (int) << 2 | (dir) << 9) << 3 * ((n) - 1)))
+#define timer_Disable(n) (set_timer_Control(get_timer_Control() & ~(1 << 3 * ((n) - 1))))
+void timer_AckInterrupt(uint8_t n, uint8_t type);
+uint8_t timer_CheckInterrupt(uint8_t n, uint8_t type);
 
 #ifdef __cplusplus
 }
